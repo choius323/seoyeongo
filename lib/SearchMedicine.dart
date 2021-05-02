@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seoyeongo/medicineList.dart';
 
 class SearchMedicine extends StatefulWidget {
   @override
@@ -12,13 +13,7 @@ class SearchMedicineState extends State<SearchMedicine> {
 
   Widget build(BuildContext context) {
     String string = 'text';
-
-    changeState() {
-      setState(() {
-        string = mNameController.text;
-      });
-    }
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('의약품 검색'),
@@ -60,14 +55,10 @@ class SearchMedicineState extends State<SearchMedicine> {
             Text('$string'),
             OutlinedButton(
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Text(mNameController.text),
-                      );
-                    });
-                changeState();
+                Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => medicineList(),)
+                );
               },
               child: Text('text 추출'),
             ),

@@ -42,9 +42,7 @@ class MyApp extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(
-                    height: 50,
-                  ),
+                  SizedBox(height: 50),
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
@@ -56,9 +54,7 @@ class MyApp extends StatelessWidget {
                     child: Text('의약품 검색'),
                     style: buttonStyle,
                   ),
-                  SizedBox(
-                    height: 40,
-                  ),
+                  SizedBox(height: 40),
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
@@ -69,9 +65,7 @@ class MyApp extends StatelessWidget {
                     child: Text('낱알 검색'),
                     style: buttonStyle,
                   ),
-                  SizedBox(
-                    height: 40,
-                  ),
+                  SizedBox(height: 40),
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
