@@ -12,8 +12,6 @@ class SearchMedicineState extends State<SearchMedicine> {
   final textC = TextEditingController();
 
   Widget build(BuildContext context) {
-    String string = 'text';
-    
     return Scaffold(
       appBar: AppBar(
         title: Text('의약품 검색'),
@@ -52,15 +50,15 @@ class SearchMedicineState extends State<SearchMedicine> {
             SizedBox(
               height: 10,
             ),
-            Text('$string'),
             OutlinedButton(
+              child: Text('검색'),
               onPressed: () {
                 Navigator.push(
-                context,
-                  MaterialPageRoute(builder: (context) => medicineList(),)
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => medicineList(),
+                    ));
               },
-              child: Text('text 추출'),
             ),
           ],
         ),

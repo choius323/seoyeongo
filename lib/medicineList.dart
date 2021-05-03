@@ -1,46 +1,57 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:seoyeongo/viewDetail.dart';
 
 class medicineList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('검색결과'),
+        title: Text('검색 결과'),
       ),
-      body: Container(
-        child: UsingBuilderListConstructing()
-      ),
+      body: Container(child: UsingBuilderListConstructing()),
     );
   }
 }
 
 class MedicineInfo {
-  Image image;
+  String image;
   String name;
   String nameCom;
+  int number;
 
-  MedicineInfo(this.image, this.name, this.nameCom);
+  MedicineInfo(this.image, this.name, this.nameCom, this.number);
 }
 
 class UsingBuilderListConstructing extends StatelessWidget {
-  var med = <MedicineInfo>[];
+  List med = <MedicineInfo>[];
 
   @override
   Widget build(BuildContext context) {
-    med.add(MedicineInfo(Image.asset("imgs/201407280003901.jpg",), "1", "1"));
-    med.add(MedicineInfo(null, "1", "1"));
-    med.add(MedicineInfo(null, "1", "1"));
-    med.add(MedicineInfo(null, "1", "1"));
+    List images = <String>[
+      "images/201407280003901.jpg",
+      "images/A11AJJJJJ003201.jpg",
+      "images/A11AKP08F000701.jpg",
+      "images/A11AOOOOO358301.jpg"
+    ];
+    for (int i = 0; i < 30; i++) {
+      med.add(MedicineInfo(images[i % 4], "$i 이름", "$i 회사", i));
+    }
 
     var _listView = ListView.separated(
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            // child: Text(med[index].name + med[index].nameCom),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ViewDetail(med[index].image, med[index].number)));
+            },
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.asset("imgs/A11AJJJJJ003201.jpg"),
+                Image.asset(
+                  med[index].image,
+                  width: 40 * MediaQuery.of(context).size.width / 100,
+                ),
                 Column(
                   children: [
                     Text(med[index].name),
@@ -58,8 +69,7 @@ class UsingBuilderListConstructing extends StatelessWidget {
 
     var _medicineTile = Container(
       child: Row(
-        children: [
-        ],
+        children: [],
       ),
     );
 

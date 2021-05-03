@@ -14,11 +14,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final ButtonStyle buttonStyle =
+      OutlinedButton.styleFrom(textStyle: TextStyle(fontSize: 30));
+
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle buttonStyle =
-        OutlinedButton.styleFrom(textStyle: TextStyle(fontSize: 30));
-
+    double boxsize = 40;
     return Scaffold(
       appBar: AppBar(
         title: Text('서연고'),
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 50),
                   child: Text(
                     '서연고',
-                    style: TextStyle(fontSize: 120),
+                    style: TextStyle(fontSize: 100),
                   ),
                 ),
               ]),
@@ -42,44 +43,28 @@ class MyApp extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 50),
-                  OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchMedicine()),
-                      );
-                    },
-                    child: Text('의약품 검색'),
-                    style: buttonStyle,
-                  ),
-                  SizedBox(height: 40),
-                  OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SearchPill()),
-                      );
-                    },
-                    child: Text('낱알 검색'),
-                    style: buttonStyle,
-                  ),
-                  SizedBox(height: 40),
-                  OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Bookmark()),
-                      );
-                    },
-                    child: Text('즐겨찾기'),
-                    style: buttonStyle,
-                  ),
+                  SizedBox(height: boxsize * 1.5),
+                  _mainButton(context, SearchMedicine(), '의약품 검색'),
+                  SizedBox(height: boxsize),
+                  _mainButton(context, SearchPill(), '낱알 검색'),
+                  SizedBox(height: boxsize),
+                  _mainButton(context, Bookmark(), '즐겨찾기'),
                 ],
               ),
             ],
           )),
+    );
+  }
+  
+  //버튼 생성 함수
+  Widget _mainButton(BuildContext context, dynamic package, String text) {
+    return OutlinedButton(
+      onPressed: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => package));
+      },
+      child: Text(text),
+      style: buttonStyle,
     );
   }
 }
