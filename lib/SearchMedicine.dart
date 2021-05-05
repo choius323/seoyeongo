@@ -56,7 +56,7 @@ class SearchMedicineState extends State<SearchMedicine> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => medicineList(),
+                      builder: (context) => MedicineList(),
                     ));
               },
             ),

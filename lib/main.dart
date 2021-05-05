@@ -9,6 +9,7 @@ void main() {
   runApp(MaterialApp(
     title: '서연고',
     home: MyApp(),
+    theme: ThemeData.light(),
   ));
 }
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double boxsize = 40;
+    double boxSize = 40;
     return Scaffold(
       appBar: AppBar(
         title: Text('서연고'),
@@ -43,11 +44,11 @@ class MyApp extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: boxsize * 1.5),
+                  SizedBox(height: boxSize * 1.5),
                   _mainButton(context, SearchMedicine(), '의약품 검색'),
-                  SizedBox(height: boxsize),
+                  SizedBox(height: boxSize),
                   _mainButton(context, SearchPill(), '낱알 검색'),
-                  SizedBox(height: boxsize),
+                  SizedBox(height: boxSize),
                   _mainButton(context, Bookmark(), '즐겨찾기'),
                 ],
               ),
