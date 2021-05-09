@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'Bookmark.dart';
 import 'SearchMedicine.dart';
 import 'SearchPill.dart';
 
 void main() {
+  // 화면전환 고정
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(MaterialApp(
     title: '서연고',
     home: MyApp(),
