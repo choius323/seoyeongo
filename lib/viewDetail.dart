@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ViewDetail extends StatelessWidget {
-  String medicineNum;
-  num number;
+  final String medicineNum;
+  final num number;
 
   ViewDetail(this.medicineNum, this.number);
 
@@ -25,6 +25,10 @@ class ViewDetail extends StatelessWidget {
               ),
               alignment: Alignment.topCenter,
             ),
+            Text("의약품 코드 : $medicineNum"),
+            Text("번호 : $number"),
+            Text("의약품 코드 : $medicineNum"),
+            Text("번호 : $number"),
             Text("의약품 코드 : $medicineNum"),
             Text("번호 : $number"),
             Text("의약품 코드 : $medicineNum"),

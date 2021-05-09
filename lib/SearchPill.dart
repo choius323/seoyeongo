@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SearchPill extends StatefulWidget {
@@ -13,7 +17,8 @@ class SearchPillState extends State<SearchPill> {
   bool camPermissionsGranted = false;
   List<CameraDescription> cameras;
   CameraController _controller;
-  Future<void> initController;
+  Future<void> _initController;
+  File _image;
 
   @override
   void initState() {
@@ -31,8 +36,8 @@ class SearchPillState extends State<SearchPill> {
     // checkPermission();
 
     cameras = await availableCameras();
-    _controller = new CameraController(cameras.first, ResolutionPreset.medium);
-    initController = _controller.initialize();
+    _controller = new CameraController(cameras.first, ResolutionPreset.high);
+    _initController = _controller.initialize();
 
     if (await Permission.camera.request().isGranted) {
       setState(() {
@@ -63,7 +68,7 @@ class SearchPillState extends State<SearchPill> {
                       height: 550,
                       width: 450,
                       child: FutureBuilder<void>(
-                        future: initController,
+                        future: _initController,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
@@ -76,6 +81,7 @@ class SearchPillState extends State<SearchPill> {
                         },
                       )),
                   // Text('Stack'),
+                  //사진 뷰어 안쪽 사각형 상자
                   Container(
                     child: Column(
                       children: [
@@ -90,41 +96,104 @@ class SearchPillState extends State<SearchPill> {
                         )
                       ],
                     ),
-
-                    // child: CustomPaint(
-                    //   painter: RectPainter(),
-                    // ),
-                    // alignment: Alignment.center,
-                  ),
+                  )
                 ],
-              )
+              ),
+              SizedBox(height: 30),
+              takePictureButton(context),
+              OutlinedButton(
+                  onPressed: () {
+                    loadImage(context);
+                  },
+                  child: Text(
+                    '사진 불러오기',
+                    style: TextStyle(fontSize: 25),
+                  )),
             ],
           ));
     } else {
       return Container(
-        child: AlertDialog(
-          content: Text('카메라 권한이 필요합니다.'),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context), child: Text('닫기'))
-          ],
+        child: AlertDialog(content: Text('카메라 권한이 필요합니다.'), actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('닫기'))
+        ]),
+      );
+    }
+  }
+
+  Widget takePictureButton(context) {
+    return OutlinedButton(
+        onPressed: () async {
+          // try / catch 블럭에서 사진을 촬영
+          try {
+            // 카메라 초기화가 완료됐는지 확인
+            await _initController;
+
+            // path 패키지를 사용하여 이미지가 저장될 경로를 지정합니다.
+            final path = join(
+              (await getTemporaryDirectory()).path,
+              '${DateTime.now()}.png',
+            );
+
+            // 사진 촬영을 시도하고 저장되는 경로를 로그로 남깁니다.
+            await _controller.takePicture(path);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DisplayPictureScreen(
+                  imagePath: path,
+                ),
+              ),
+            );
+          } catch (e) {
+            // 만약 에러가 발생하면, 콘솔에 에러 로그를 남깁니다.
+            print(e);
+          }
+        },
+        child: Text(
+          '사진 촬영',
+          style: TextStyle(fontSize: 25),
+        ));
+  }
+
+  Future loadImage(context) async {
+    // 갤러리에서 사진 불러오기
+    PickedFile picker =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+
+    //가져온 사진의 Type을 File 형식으로 바꿔줍니다.
+    File imageFile = File(picker.path);
+
+    setState(() {
+      _image = imageFile;
+    });
+
+    if (_image != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DisplayPictureScreen(
+            imagePath: _image.path,
+          ),
         ),
       );
     }
   }
 }
 
-// class RectPainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     Paint rect = Paint()
-//       ..color = Color(0xff000000)
-//       ..style = PaintingStyle.fill;
-//
-//     Offset offset = Offset(size.width / 2, size.height / 2);
-//     canvas.drawRect(offset & Size(200, 200), rect);
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-// }
+// 사용자가 촬영하거나 불러온 사진을 보여주는 위젯
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('사진')),
+      // 이미지는 디바이스에 파일로 저장됩니다. 이미지를 보여주기 위해 주어진
+      // 경로로 `Image.file`을 생성하세요.
+      body: Image.file(File(imagePath)),
+    );
+  }
+}

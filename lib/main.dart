@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
   }
   
   //버튼 생성 함수
-  Widget _mainButton(BuildContext context, dynamic package, String text) {
+  Widget _mainButton(BuildContext context, package, String text) {
     return OutlinedButton(
       onPressed: () {
         Navigator.push(
