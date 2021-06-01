@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'Bookmark.dart';
+import 'FlaskTest.dart';
 import 'SearchMedicine.dart';
 import 'SearchPill.dart';
 
@@ -31,37 +32,38 @@ class MyApp extends StatelessWidget {
         title: Text('서연고'),
       ),
       body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 50),
-                  child: Text(
-                    '서연고',
-                    style: TextStyle(fontSize: 100),
-                  ),
-                ),
-              ]),
+        alignment: Alignment.topCenter,
+        margin: EdgeInsets.only(bottom: 50),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Text(
+                '서연고',
+                style: TextStyle(fontSize: 100),
+              ),
+            ),
 
-              // 버튼 배치
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            // 버튼 배치
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  SizedBox(height: boxSize * 1.5),
                   _mainButton(context, SearchMedicine(), '의약품 검색'),
-                  SizedBox(height: boxSize),
                   _mainButton(context, SearchPill(), '낱알 검색'),
-                  SizedBox(height: boxSize),
                   _mainButton(context, Bookmark(), '즐겨찾기'),
+                  _mainButton(context, WebTest(), 'Flask Test')
                 ],
               ),
-            ],
-          )),
+            )
+          ],
+        ),
+      ),
     );
   }
-  
+
   //버튼 생성 함수
   Widget _mainButton(BuildContext context, package, String text) {
     return OutlinedButton(

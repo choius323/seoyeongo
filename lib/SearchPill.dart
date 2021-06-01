@@ -61,8 +61,8 @@ class SearchPillState extends State<SearchPill> {
     final width = MediaQuery.of(context).size.width / 1.5;
     final height = MediaQuery.of(context).size.height / 1.5;
 
-    if (camPermissionsGranted) {
-      // && !controller.value.isInitialized
+    // if (camPermissionsGranted) {
+    //   // && !controller.value.isInitialized
       return Scaffold(
           appBar: AppBar(
             title: Text('낱알 검색'),
@@ -105,13 +105,13 @@ class SearchPillState extends State<SearchPill> {
               ],
             ),
           ));
-    } else {
-      return Container(
-        child: AlertDialog(content: Text('카메라 권한이 필요합니다.'), actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('닫기'))
-        ]),
-      );
-    }
+    // } else {
+    //   return Container(
+    //     child: AlertDialog(content: Text('카메라 권한이 필요합니다.'), actions: [
+    //       TextButton(onPressed: () => Navigator.pop(context), child: Text('닫기'))
+    //     ]),
+    //   );
+    // }
   }
 
   Widget takePictureButton(context) {
