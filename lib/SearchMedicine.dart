@@ -17,6 +17,7 @@ class SearchMedicineState extends State<SearchMedicine> {
         title: Text('의약품 검색'),
       ),
       body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: <Widget>[
             SizedBox(
@@ -33,6 +34,7 @@ class SearchMedicineState extends State<SearchMedicine> {
               height: 10,
             ),
             TextField(
+              controller: mNumController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '의약품 번호',
@@ -56,7 +58,7 @@ class SearchMedicineState extends State<SearchMedicine> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MedicineList(),
+                      builder: (context) => MedicineList(mNameController.text),
                     ));
               },
             ),
