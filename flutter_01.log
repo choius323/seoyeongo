@@ -1,0 +1,61 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run -d chrome --web-port=8080 --web-hostname=127.0.0.1
+
+## exception
+
+FileSystemException: FileSystemException: Exists failed, path = 'C:\Users\TEMP\tflite_example-master\assets\labels.txt\' (OS Error: 파일 이름, 디렉터리 이름 또는 볼륨 레이블 구문이 잘못되었습니다.
+, errno = 123)
+
+```
+#0      _Directory.existsSync (dart:io/directory_impl.dart:94:7)
+#1      ForwardingFileSystemEntity.existsSync (package:file/src/forwarding/forwarding_file_system_entity.dart:43:33)
+#2      ErrorHandlingDirectory.existsSync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:469:22)
+#3      _runSync (package:flutter_tools/src/base/error_handling_io.dart:556:14)
+#4      ErrorHandlingDirectory.existsSync (package:flutter_tools/src/base/error_handling_io.dart:468:12)
+#5      ManifestAssetBundle._parseAssetsFromFolder (package:flutter_tools/src/asset.dart:558:47)
+#6      ManifestAssetBundle._parseAssets (package:flutter_tools/src/asset.dart:497:9)
+#7      ManifestAssetBundle.build (package:flutter_tools/src/asset.dart:198:53)
+<asynchronous suspension>
+#8      _ResidentWebRunner._updateDevFS (package:flutter_tools/src/isolated/resident_web_runner.dart:702:26)
+<asynchronous suspension>
+#9      _ResidentWebRunner.run.<anonymous closure> (package:flutter_tools/src/isolated/resident_web_runner.dart:502:41)
+<asynchronous suspension>
+#10     asyncGuard.<anonymous closure> (package:flutter_tools/src/base/async_guard.dart:111:24)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 2.0.1, on Microsoft Windows [Version 10.0.18363.1500], locale ko-KR)
+    • Flutter version 2.0.1 at C:\src\flutter\flutter
+    • Framework revision c5a4b4029c (2 months ago), 2021-03-04 09:47:48 -0800
+    • Engine revision 40441def69
+    • Dart version 2.12.0
+
+[!] Android toolchain - develop for Android devices (Android SDK version 30.0.2)
+    • Android SDK at C:\Users\승현\AppData\Local\Android\sdk
+    • Platform android-30, build-tools 30.0.2
+    • Java binary at: C:\Android\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+    ! Some Android licenses not accepted.  To resolve this, run: flutter doctor --android-licenses
+
+[✓] Chrome - develop for the web
+    • Chrome at C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+
+[✓] Android Studio (version 4.0)
+    • Android Studio at C:\Android
+    • Flutter plugin version 51.0.1
+    • Dart plugin version 193.7547
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+
+[✓] Connected device (2 available)
+    • Chrome (web) • chrome • web-javascript • Google Chrome 90.0.4430.212
+    • Edge (web)   • edge   • web-javascript • Microsoft Edge 90.0.818.56
+
+! Doctor found issues in 1 category.
+```

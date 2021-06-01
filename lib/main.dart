@@ -1,76 +1,128 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:tflite/tflite.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
-import 'Bookmark.dart';
-import 'SearchMedicine.dart';
-import 'SearchPill.dart';
-
-void main() {
-  // 화면전환 고정
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  runApp(MaterialApp(
-    title: '서연고',
-    home: MyApp(),
-    theme: ThemeData.light(),
-  ));
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  final ButtonStyle buttonStyle =
-      OutlinedButton.styleFrom(textStyle: TextStyle(fontSize: 30));
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+                title: Text('TFLite Example'),
+                backgroundColor: Colors.transparent),
+            body: Center(child: MyImagePicker())));
+  }
+}
+
+class MyImagePicker extends StatefulWidget {
+  @override
+  MyImagePickerState createState() => MyImagePickerState();
+}
+
+class MyImagePickerState extends State {
+  File imageURI;
+  String result;
+  String path;
+
+  Future getImageFromCamera() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      imageURI = image;
+      path = image.path;
+    });
+  }
+
+  Future getImageFromGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imageURI = image;
+      path = image.path;
+    });
+  }
+
+  Future classifyImage(path3) async {
+    // 여기가 모델 실행 부분   나머지는 사진 입력+불러오기
+    await Tflite.loadModel(
+        // pubsepc.yaml 파일에 모델,레이블 파일 등록
+        model: "assets/model2.tflite",
+        labels:
+            "assets/labels.txt"); // model, labels 는 assets 폴더에 모델 (*.tflite) 이랑, 클래스별 텍스트 파일 넣은거 씀
+
+    var output = await Tflite.runModelOnImage(
+        //모델에 찍은 이미지 넣고 돌림
+        //binary: imageURI,
+        path: path3,
+        numResults: 25,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        threshold: 0.5);
+    // Uint8List imageToByteListFloat32(Image image, int inputSize) {
+    //   var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+    //   var buffer = Uint8List.view(convertedBytes.buffer);
+    //   int pixelIndex = 0;
+    //   for (var i = 0; i < inputSize; i++) {
+    //     for (var j = 0; j < inputSize; j++) {
+    //       var pixel = image.getPixel(j, i);
+    //       buffer[pixelIndex++] = image.getRed(pixel);
+    //       buffer[pixelIndex++] = image.getGreen(pixel);
+    //       buffer[pixelIndex++] = image.getBlue(pixel);
+    //     }
+    //   }
+    // }
+
+    setState(() {
+      result = output.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    double boxSize = 40;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('서연고'),
-      ),
-      body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 50),
-                  child: Text(
-                    '서연고',
-                    style: TextStyle(fontSize: 100),
-                  ),
-                ),
-              ]),
-
-              // 버튼 배치
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: boxSize * 1.5),
-                  _mainButton(context, SearchMedicine(), '의약품 검색'),
-                  SizedBox(height: boxSize),
-                  _mainButton(context, SearchPill(), '낱알 검색'),
-                  SizedBox(height: boxSize),
-                  _mainButton(context, Bookmark(), '즐겨찾기'),
-                ],
-              ),
-            ],
-          )),
-    );
-  }
-  
-  //버튼 생성 함수
-  Widget _mainButton(BuildContext context, package, String text) {
-    return OutlinedButton(
-      onPressed: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => package));
-      },
-      child: Text(text),
-      style: buttonStyle,
-    );
+          imageURI == null
+              ? Text('No image selected.')
+              : Image.file(imageURI,
+                  width: 224.0, height: 224.0, fit: BoxFit.cover),
+          Container(
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 20),
+              child: ElevatedButton(
+                onPressed: () => getImageFromCamera(),
+                child: Text('Click Here To Select Image From Camera'),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    onPrimary: Colors.white,
+                    padding: EdgeInsets.fromLTRB(12, 12, 12, 12)),
+              )),
+          Container(
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: ElevatedButton(
+                onPressed: () => getImageFromGallery(),
+                child: Text('Click Here To Select Image From Gallery'),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    onPrimary: Colors.white,
+                    padding: EdgeInsets.fromLTRB(12, 12, 12, 12)),
+              )),
+          Container(
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 20),
+              child: ElevatedButton(
+                onPressed: () => classifyImage(imageURI.path),
+                child: Text('Classify Image'),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    onPrimary: Colors.white,
+                    padding: EdgeInsets.fromLTRB(12, 12, 12, 12)),
+              )),
+          result == null ? Text('Result') : Text(result)
+        ])));
   }
 }
