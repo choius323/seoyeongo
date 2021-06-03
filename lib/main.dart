@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:seoyeongo/ImgPicker.dart';
 
 import 'Bookmark.dart';
-import 'FlaskTest.dart';
 import 'SearchMedicine.dart';
 import 'SearchPill.dart';
 
@@ -55,8 +54,8 @@ class MyApp extends StatelessWidget {
                   _mainButton(context, SearchMedicine(), '의약품 검색'),
                   _mainButton(context, SearchPill(), '낱알 검색'),
                   _mainButton(context, Bookmark(), '즐겨찾기'),
-                  _mainButton(context, WebTest(), 'Flask Test'),
-                  _mainButton(context, MyImagePicker(), 'Image Picker'),
+                  // _mainButton(context, WebTest(), 'Flask Test'),
+                  // _mainButton(context, MyImagePicker(), 'Image Picker'),
                 ],
               ),
             )

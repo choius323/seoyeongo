@@ -6,11 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import 'CropperTest.dart';
+import 'package:tflite/tflite.dart';
 
 class SearchPill extends StatefulWidget {
   SearchPill({Key key}) : super(key: key);
@@ -26,11 +22,13 @@ class SearchPillState extends State<SearchPill> {
   Future<void> _initController;
   File _imageFile;
 
-  @override
-  void initState() {
-    super.initState();
-    setupCameras();
-  }
+  List result;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   setupCameras();
+  // }
 
   @override
   void dispose() {
@@ -38,23 +36,23 @@ class SearchPillState extends State<SearchPill> {
     super.dispose();
   }
 
-  Future<void> setupCameras() async {
-    // checkPermission();
-
-    cameras = await availableCameras();
-    _controller = new CameraController(cameras.first, ResolutionPreset.high);
-    _initController = _controller.initialize();
-
-    if (await Permission.camera.request().isGranted) {
-      setState(() {
-        camPermissionsGranted = true;
-      });
-    }
-
-    //여러가지 퍼미션을하고싶으면 []안에 추가하면된다. (팝업창이뜬다)
-    Map<Permission, PermissionStatus> statuses =
-        await [Permission.camera].request();
-  }
+  // Future<void> setupCameras() async {
+  //   // checkPermission();
+  //
+  //   cameras = await availableCameras();
+  //   _controller = new CameraController(cameras.first, ResolutionPreset.high);
+  //   _initController = _controller.initialize();
+  //
+  //   if (await Permission.camera.request().isGranted) {
+  //     setState(() {
+  //       camPermissionsGranted = true;
+  //     });
+  //   }
+  //
+  //   //여러가지 퍼미션을하고싶으면 []안에 추가하면된다. (팝업창이뜬다)
+  //   Map<Permission, PermissionStatus> statuses =
+  //       await [Permission.camera].request();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,48 +61,57 @@ class SearchPillState extends State<SearchPill> {
 
     // if (camPermissionsGranted) {
     //   // && !controller.value.isInitialized
-      return Scaffold(
-          appBar: AppBar(
-            title: Text('낱알 검색'),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('낱알 검색'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _imageFile == null
+                  ? Text('No image selected.')
+                  : Image.file(_imageFile,
+                      width: 224.0, height: 224.0, fit: BoxFit.cover),
+              // takePictureButton(context),
+              OutlinedButton(
+                  onPressed: () => _loadImage(ImageSource.camera),
+                  child: Text(
+                    "사진 촬영",
+                    style: TextStyle(fontSize: 25),
+                  )),
+              OutlinedButton(
+                  onPressed: () {
+                    _loadImage(ImageSource.gallery);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => DisplayPictureScreen(
+                    //       imagePath: _imageFile,
+                    //     ),
+                    //   ),
+                    // );
+                  },
+                  child: Text(
+                    '사진 불러오기',
+                    style: TextStyle(fontSize: 25),
+                  )),
+              // OutlinedButton(
+              //     onPressed: () {
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(builder: (context) => SearchPill()
+              //               // CropperTest(),
+              //               ));
+              //     },
+              //     child: Text('crop image')),
+              OutlinedButton(
+                  onPressed: () => classifyImage(_imageFile.path),
+                  child: Text('이미지 분류')),
+              Text(result == null ? 'result' : result.toString()),
+            ],
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                takePictureButton(context),
-                OutlinedButton(
-                    onPressed: () => _loadImage(ImageSource.camera),
-                    child: Text(
-                      "사진 촬영2",
-                      style: TextStyle(fontSize: 25),
-                    )),
-                OutlinedButton(
-                    onPressed: () {
-                      _loadImage(ImageSource.gallery);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => DisplayPictureScreen(
-                      //       imagePath: _imageFile,
-                      //     ),
-                      //   ),
-                      // );
-                    },
-                    child: Text(
-                      '사진 불러오기',
-                      style: TextStyle(fontSize: 25),
-                    )),
-                OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CropperTest()));
-                    },
-                    child: Text('crop image')),
-              ],
-            ),
-          ));
+        ));
     // } else {
     //   return Container(
     //     child: AlertDialog(content: Text('카메라 권한이 필요합니다.'), actions: [
@@ -114,41 +121,41 @@ class SearchPillState extends State<SearchPill> {
     // }
   }
 
-  Widget takePictureButton(context) {
-    return OutlinedButton(
-        onPressed: () async {
-          // try / catch 블럭에서 사진을 촬영
-          try {
-            // 카메라 초기화가 완료됐는지 확인
-            await _initController;
-
-            // path 패키지를 사용하여 이미지가 저장될 경로를 지정합니다.
-            final path = join(
-              (await getTemporaryDirectory()).path,
-              '${DateTime.now()}.png',
-            );
-
-            // 사진 촬영을 시도하고 저장되는 경로를 로그로 남깁니다.
-            await _controller.takePicture(path);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  imagePath: File(path),
-                ),
-              ),
-            );
-          } catch (e) {
-            // 만약 에러가 발생하면, 콘솔에 에러 로그를 남깁니다.
-            print(e);
-          }
-        },
-        child: Text(
-          '사진 촬영',
-          style: TextStyle(fontSize: 25),
-        ));
-  }
+  // Widget takePictureButton(context) {
+  //   return OutlinedButton(
+  //       onPressed: () async {
+  //         // try / catch 블럭에서 사진을 촬영
+  //         try {
+  //           // 카메라 초기화가 완료됐는지 확인
+  //           await _initController;
+  //
+  //           // path 패키지를 사용하여 이미지가 저장될 경로를 지정합니다.
+  //           final path = join(
+  //             (await getTemporaryDirectory()).path,
+  //             '${DateTime.now()}.png',
+  //           );
+  //
+  //           // 사진 촬영을 시도하고 저장되는 경로를 로그로 남깁니다.
+  //           await _controller.takePicture(path);
+  //
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => DisplayPictureScreen(
+  //                 imagePath: File(path),
+  //               ),
+  //             ),
+  //           );
+  //         } catch (e) {
+  //           // 만약 에러가 발생하면, 콘솔에 에러 로그를 남깁니다.
+  //           print(e);
+  //         }
+  //       },
+  //       child: Text(
+  //         '사진 촬영',
+  //         style: TextStyle(fontSize: 25),
+  //       ));
+  // }
 
   _loadImage(ImageSource source) async {
     // 갤러리에서 사진 불러오기
@@ -184,6 +191,28 @@ class SearchPillState extends State<SearchPill> {
         _imageFile = cropped;
       });
     }
+  }
+
+  Future classifyImage(path3) async {
+    // 여기가 모델 실행 부분   나머지는 사진 입력+불러오기
+    await Tflite.loadModel(
+        // pubsepc.yaml 파일에 모델,레이블 파일 등록
+        model: "assets/model2.tflite",
+        labels:
+            "assets/labels.txt"); // model, labels 는 assets 폴더에 모델 (*.tflite) 이랑, 클래스별 텍스트 파일 넣은거 씀
+
+    var output = await Tflite.runModelOnImage(
+        //모델에 찍은 이미지 넣고 돌림
+        //binary: imageURI,
+        path: path3,
+        numResults: 10,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        threshold: 0);
+    print(output.toList());
+    setState(() {
+      result = output;
+    });
   }
 }
 
