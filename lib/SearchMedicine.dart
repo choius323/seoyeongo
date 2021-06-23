@@ -45,12 +45,12 @@ class SearchMedicineState extends State<SearchMedicine> {
             SizedBox(
               height: 10,
             ),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '제조사',
-              ),
-            ),
+            // TextField(
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(),
+            //     labelText: '제조사',
+            //   ),
+            // ),
             SizedBox(
               height: 10,
             ),
@@ -74,7 +74,6 @@ class SearchMedicineState extends State<SearchMedicine> {
                     ));
               },
             ),
-            Text("번호로 DB검색만 작동"),
           ],
         ),
       ),

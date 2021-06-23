@@ -107,7 +107,10 @@ class SearchPillState extends State<SearchPill> {
               //     child: Text('crop image')),
               OutlinedButton(
                   onPressed: () => classifyImage(_imageFile.path),
-                  child: Text('이미지 분류')),
+                  child: Text(
+                    '이미지 분류',
+                    style: TextStyle(fontSize: 25),
+                  )),
               Text(result == null ? 'result' : result.toString()),
             ],
           ),
@@ -195,6 +198,7 @@ class SearchPillState extends State<SearchPill> {
 
   Future classifyImage(path3) async {
     // 여기가 모델 실행 부분   나머지는 사진 입력+불러오기
+    List list = [];
     await Tflite.loadModel(
         // pubsepc.yaml 파일에 모델,레이블 파일 등록
         model: "assets/model2.tflite",
@@ -205,36 +209,75 @@ class SearchPillState extends State<SearchPill> {
         //모델에 찍은 이미지 넣고 돌림
         //binary: imageURI,
         path: path3,
-        numResults: 10,
+        numResults: 15,
         imageMean: 127.5,
         imageStd: 127.5,
         threshold: 0);
-    print(output.toList());
+
+    // print("output : ${output.toList().map((e) => list.add(e['label']))}");
+    list = output
+        .toList()
+        .map((e) => e['label'].toString().split(' ')[1])
+        .toList();
+    print(list);
     setState(() {
-      result = output;
+      result = list;
     });
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DisplayPictureScreen(
+            items: list,
+          ),
+        ));
   }
 }
 
 // 사용자가 촬영하거나 불러온 사진을 보여주는 위젯(화면)
 class DisplayPictureScreen extends StatelessWidget {
-  final File imagePath;
+  final List items;
 
-  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+  const DisplayPictureScreen({this.items});
 
   @override
   Widget build(BuildContext context) {
-    File file = imagePath;
     return Scaffold(
         appBar: AppBar(title: Text('사진')),
         // 이미지는 디바이스에 파일로 저장됩니다. 이미지를 보여주기 위해 주어진
         // 경로로 `Image.file`을 생성하세요.
-        body: Container(
-          alignment: Alignment.topCenter,
-          width: 300,
-          margin: EdgeInsets.all(50),
-          child: file == null ? Text('file == null') : Image.file(file),
-          // child: Image.file(File(imagePath), fit: BoxFit.contain),
+        body: ListView.separated(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider();
+          },
+          itemCount: items.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              onTap: () {},
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40 * MediaQuery.of(context).size.width / 100,
+                    height: 40 * MediaQuery.of(context).size.width / 100,
+                    child: Text(
+                      '사진',
+                      style: TextStyle(fontSize: 40),
+                    ),
+                    alignment: Alignment.center,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('번호 : ' + items[index]),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
         ));
   }
 }
