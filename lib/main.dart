@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seoyeongo/ImgPicker.dart';
+import 'package:flutter/widgets.dart';
 
 import 'Bookmark.dart';
 import 'SearchMedicine.dart';
@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double boxSize = 40;
     return Scaffold(
       appBar: AppBar(
         title: Text('서연고'),

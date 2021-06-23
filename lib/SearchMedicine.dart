@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:seoyeongo/medicineList.dart';
 
+import 'medicineListDB.dart';
+
 class SearchMedicine extends StatefulWidget {
   @override
   SearchMedicineState createState() => SearchMedicineState();
 }
 
 class SearchMedicineState extends State<SearchMedicine> {
-  final mNameController = TextEditingController();
-  final mNumController = TextEditingController();
+  final itemnameController = TextEditingController();
+  final itemseqController = TextEditingController();
   final textC = TextEditingController();
 
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class SearchMedicineState extends State<SearchMedicine> {
               height: 10,
             ),
             TextField(
-              controller: mNameController,
+              controller: itemnameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '의약품 이름',
@@ -34,7 +36,7 @@ class SearchMedicineState extends State<SearchMedicine> {
               height: 10,
             ),
             TextField(
-              controller: mNumController,
+              controller: itemseqController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '의약품 번호',
@@ -58,10 +60,21 @@ class SearchMedicineState extends State<SearchMedicine> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MedicineList(mNameController.text),
+                      builder: (context) => MedicineList(itemnameController.text),
                     ));
               },
             ),
+            OutlinedButton(
+              child: Text('내장 DB 검색'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MedicineListDB(itemseq: itemseqController.text, itemname: itemnameController.text,),
+                    ));
+              },
+            ),
+            Text("번호로 DB검색만 작동"),
           ],
         ),
       ),

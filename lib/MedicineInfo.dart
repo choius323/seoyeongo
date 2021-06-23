@@ -1,22 +1,22 @@
-class MedicineInfo {
+class MedicineInfo2 {
   final String image;
   final String mName;
-  final String cName;
-  final int mNum;
+  final String eName;
+  final String mNum;
 
-  MedicineInfo(this.image, this.mName, this.cName, this.mNum);
+  const MedicineInfo2({this.image, this.mName, this.eName, this.mNum});
 
   Map<String, dynamic> toMap() {
     return {
       'image': image,
       'mName': mName,
-      'nameCom': cName,
+      'nameCom': eName,
       'mNum': mNum,
     };
   }
 
   @override
   String toString() {
-    return 'MedicineInfo(image:$image, mName: $mName, cName:$cName, mNum:$mNum)';
+    return 'MedicineInfo(image:$image, mName: $mName, cName:$eName, mNum:$mNum)';
   }
 }

@@ -1,31 +1,31 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:seoyeongo/LoadDB.dart';
-import 'package:seoyeongo/viewDetail.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:seoyeongo/DBHelper.dart';
 
-import 'MedicineInfo.dart';
+import 'MedicineInfo2.dart';
+import 'ViewDetailDB.dart';
 
 class MedicineListDB extends StatefulWidget {
-  String mNum;
+  final String itemseq;
+  final String itemname;
 
   @override
-  _MedicineListDBState createState() => _MedicineListDBState(mNum);
+  _MedicineListDBState createState() =>
+      _MedicineListDBState(itemseq: itemseq, itemname: itemname);
 
-  MedicineListDB(this.mNum);
+  MedicineListDB({this.itemseq, this.itemname});
 }
 
 class _MedicineListDBState extends State<MedicineListDB> {
   int page = 1;
   String tag = 'id';
+  final String itemseq;
+  final String itemname;
+  DBHelper db;
 
-  String mName;
-  String itemSeq;
-
-  List<MedicineInfo> dataList = [];
-
-  _MedicineListDBState(this.itemSeq);
+  _MedicineListDBState({this.itemseq, this.itemname});
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +36,24 @@ class _MedicineListDBState extends State<MedicineListDB> {
             _pageButtons(),
             Container(
               child: FutureBuilder(
-                future:
-                fetchString({'tag': tag, 'pages': page.toString()}, mName),
-                builder: (context, snapshot) {
+                future: Future.delayed(
+                    Duration(milliseconds: 500),
+                    () => db.getDBData(
+                        page: page, itemseq: itemseq, itemname: itemname)),
+                builder:
+                    (context, AsyncSnapshot<List<MedicineInfo2>> snapshot) {
                   if (snapshot.hasError == true) {
-                    print('snapshot.hasError -> $snapshot.hasError');
-                    // 에러 메시지는 굳이 화면 가운데에 놓을 필요가 없다.
+                    print('snapshot.hasError -> ${snapshot.error}');
                     return Text('${snapshot.error}');
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     // 나머지 공간 전체를 사용하는데, 전체 공간을 사용하지 않는 위젯이라면 가운데에 배치.
-                    if (snapshot.data.toString() == '[]') {
+                    if (snapshot.data.isEmpty) {
                       return SizedBox();
                     } else {
-                      return Expanded(child: _listView(snapshot.data));
+                      return Expanded(child: _listView(snapshot));
                     }
                   }
 
-                  // 인디케이터가 다른 위젯들처럼 화면 가운데에 위치시킨다.
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -69,17 +70,20 @@ class _MedicineListDBState extends State<MedicineListDB> {
     super.initState();
 
     setState(() {
-      getData();
+      getDB();
     });
   }
 
-  Future getData() async{
-    final data = LoadDB(itemSeq);
-    data.OpenDB();
-    final futureList = data.getData() as List<MedicineInfo>;
-    print('asdasd' + futureList.toString());
-    print(data.getData());
+  Future getDB() async {
+    db = DBHelper();
+    db.openDB();
+    // Future.delayed(Duration(seconds: 1), () => getData());
   }
+
+  // Future getData() async {
+  //   print("medicineListDB data : $db");
+  //   dataList = db.getDBData();
+  // }
 
   Widget _pageButtons() {
     return Row(
@@ -107,8 +111,11 @@ class _MedicineListDBState extends State<MedicineListDB> {
     );
   }
 
-  Widget _listView(String data) {
-    return ListView.separated(scrollDirection: Axis.vertical,
+  Widget _listView(var snapshot) {
+    List<MedicineInfo2> dataList = snapshot.data;
+
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
       shrinkWrap: true,
       separatorBuilder: (BuildContext context, int index) {
         return Divider();
@@ -120,33 +127,34 @@ class _MedicineListDBState extends State<MedicineListDB> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ViewDetail(null)));
-          },title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.network(
-              dataList[index].image,
-              width: (40 * MediaQuery
-                  .of(context)
-                  .size
-                  .width / 100),
-              // width: 100,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('mName : ' + dataList[index].mName),
-                Text('mNum : ' + dataList[index].mNum.toString()),
-                Text('cName : ' + dataList[index].cName),
-              ],
-            )
-          ],
-        ),);
+                    builder: (context) => ViewDetailDB(
+                          med: dataList[index],
+                          db: db,
+                        )));
+          },
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.network(
+                dataList[index].itemimage,
+                width: (40 * MediaQuery.of(context).size.width / 100),
+                // width: 100,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text("제품명 : " + dataList[index].itemname),
+                    Text('제품번호 : ' + dataList[index].itemseq),
+                    Text('제조사 : ' + dataList[index].entpname),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
       },
     );
-  }
-
-  Future<void> fetchString(Map query, String mName) async {
-
   }
 }
