@@ -18,7 +18,7 @@ class DBHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbPath = join(documentsDirectory.path, "assets/grn_info.db");
 
-    var exists = await databaseExists(dbPath);
+    // var exists = await databaseExists(dbPath);
 
     // if (!exists) {
     // Should happen only the first time you launch your application
@@ -50,15 +50,32 @@ class DBHelper {
   }
 
   Future<List<MedicineInfo2>> getDBData(
-      {int page, String itemseq, String itemname}) async {
+      {int page,
+      String itemSeq,
+      String itemName,
+      String itemEnt,
+      String itemChart,
+      List itemSeqList}) async {
 // 모든 MedicineInfo를 얻기 위해 테이블에 질의합니다.
+    String query;
+
     print('getData method');
-    String query = """
-        Select * From grn_info 
-        Where ITEM_SEQ Like \'\%$itemseq\%\' and
-        ITEM_NAME Like \'\%$itemname\%\'
+    if (itemSeqList != null){
+       query = "Select * From grn_info Where ";
+      for(String seq in itemSeqList){
+        query += "ITEM_SEQ Like \'\%$seq\%\' or ";
+      }
+      query += "ITEM_SEQ Like \'\%\%\' Limit ?, 15;";
+    } else {
+      query = """Select * From grn_info 
+        Where ITEM_SEQ Like \'\%$itemSeq\%\' and
+        ITEM_NAME Like \'\%$itemName\%\' and
+        ENTP_NAME Like \'\%$itemEnt\%\' and
+        CHART Like \'\%$itemChart\%\'
         Limit ?, 15;
         """;
+    }
+
     List args = [
       // itemseq,
       // itemname,
@@ -66,10 +83,32 @@ class DBHelper {
     ];
     var res = await _db.rawQuery(query, args);
 
-    var list = res.isNotEmpty ? mapToList(res) : mapToList(res);
+    // var list = res.isNotEmpty ? mapToList(res) : mapToList(res);
+    var list = mapToList(res);
     // print("list" + list.toString());
+
+    print("itemseq " + list[0].toJson().toString());
     return list;
   }
+
+//   Future<List<MedicineInfo2>> getDBDataSeq(
+//       {int page,
+//         List seqList}) async {
+// // 모든 MedicineInfo를 얻기 위해 테이블에 질의합니다.
+//     print('getDBDataSeq method');
+//
+//     List args = [
+//       // itemseq,
+//       // itemname,
+//       ((page - 1) * 15 + 1).toString(),
+//     ];
+//     // print(query);
+//     var res = await _db.rawQuery(query, args);
+//
+//     var list = res.isNotEmpty ? mapToList(res) : mapToList(res);
+//     // print("list" + list.toString());
+//     return list;
+//   }
 
   Future<List<MedicineInfo2>> getDetailData(int id) async {
     print('get detail data');
@@ -86,7 +125,7 @@ class DBHelper {
     // List<Map<String, dynamic>를 List<MedicineInfo>으로 변환합니다.
     return List.generate(list.length, (i) {
       return MedicineInfo2(
-        id: list[i]['ID'],
+        id: list[i]['id'],
         itemimage: list[i]['ITEM_IMAGE'],
         itemname: list[i]['ITEM_NAME'],
         entpname: list[i]['ENTP_NAME'],

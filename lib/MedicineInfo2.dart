@@ -38,43 +38,61 @@ class MedicineInfo2 {
   int _id;
 
   String get chart => _chart;
+
   String get colorclass1 => _colorclass1;
+
   dynamic get colorclass2 => _colorclass2;
+
   String get drugshape => _drugshape;
+
   String get entpname => _entpname;
+
   String get entpseq => _entpseq;
+
   String get itemimage => _itemimage;
+
   String get itemname => _itemname;
+
   String get itemseq => _itemseq;
+
   dynamic get markcodeback => _markcodeback;
+
   dynamic get markcodebackanal => _markcodebackanal;
+
   dynamic get markcodebackimg => _markcodebackimg;
+
   dynamic get markcodefront => _markcodefront;
+
   dynamic get markcodefrontanal => _markcodefrontanal;
+
   dynamic get markcodefrontimg => _markcodefrontimg;
+
   dynamic get printback => _printback;
+
   String get printfront => _printfront;
+
   int get id => _id;
 
   MedicineInfo2({
-      String chart, 
-      String colorclass1, 
-      dynamic colorclass2, 
-      String drugshape, 
-      String entpname, 
-      String entpseq, 
-      String itemimage, 
-      String itemname, 
-      String itemseq, 
-      dynamic markcodeback, 
-      dynamic markcodebackanal, 
-      dynamic markcodebackimg, 
-      dynamic markcodefront, 
-      dynamic markcodefrontanal, 
-      dynamic markcodefrontimg, 
-      dynamic printback, 
-      String printfront, 
-      int id}){
+    String chart,
+    String colorclass1,
+    dynamic colorclass2,
+    String drugshape,
+    String entpname,
+    String entpseq,
+    String itemimage,
+    String itemname,
+    String itemseq,
+    dynamic markcodeback,
+    dynamic markcodebackanal,
+    dynamic markcodebackimg,
+    dynamic markcodefront,
+    dynamic markcodefrontanal,
+    dynamic markcodefrontimg,
+    dynamic printback,
+    String printfront,
+    int id,
+  }) {
     _chart = chart;
     _colorclass1 = colorclass1;
     _colorclass2 = colorclass2;
@@ -93,7 +111,7 @@ class MedicineInfo2 {
     _printback = printback;
     _printfront = printfront;
     _id = id;
-}
+  }
 
   MedicineInfo2.fromJson(dynamic json) {
     _chart = json["CHART"];
@@ -138,5 +156,4 @@ class MedicineInfo2 {
     map["id"] = _id;
     return map;
   }
-
 }

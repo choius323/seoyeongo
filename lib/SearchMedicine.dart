@@ -9,8 +9,10 @@ class SearchMedicine extends StatefulWidget {
 }
 
 class SearchMedicineState extends State<SearchMedicine> {
-  final itemnameController = TextEditingController();
-  final itemseqController = TextEditingController();
+  final itemNameController = TextEditingController();
+  final itemSeqController = TextEditingController();
+  final itemEntController = TextEditingController();
+  final itemChartController = TextEditingController();
   final textC = TextEditingController();
 
   Widget build(BuildContext context) {
@@ -22,45 +24,47 @@ class SearchMedicineState extends State<SearchMedicine> {
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             TextField(
-              controller: itemnameController,
+              controller: itemNameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '의약품 이름',
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             TextField(
-              controller: itemseqController,
+              controller: itemSeqController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '의약품 번호',
               ),
             ),
-            SizedBox(
-              height: 10,
+            SizedBox(height: 10),
+            TextField(
+              controller: itemEntController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '제조사',
+              ),
             ),
-            // TextField(
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(),
-            //     labelText: '제조사',
-            //   ),
-            // ),
-            SizedBox(
-              height: 10,
+            SizedBox(height: 10),
+            TextField(
+              controller: itemChartController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '글자, 모양, 색',
+              ),
             ),
+            SizedBox(height: 10),
             OutlinedButton(
               child: Text('검색'),
               onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MedicineList(itemnameController.text),
+                      builder: (context) =>
+                          MedicineList(itemNameController.text),
                     ));
               },
             ),
@@ -70,7 +74,12 @@ class SearchMedicineState extends State<SearchMedicine> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MedicineListDB(itemseq: itemseqController.text, itemname: itemnameController.text,),
+                      builder: (context) => MedicineListDB(
+                        itemSeq: itemSeqController.text,
+                        itemName: itemNameController.text,
+                        itemEnt: itemEntController.text,
+                        itemChart: itemChartController.text,
+                      ),
                     ));
               },
             ),

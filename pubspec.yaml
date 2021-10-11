@@ -60,6 +60,7 @@ flutter:
   assets:
     - images/
     - assets/
+#    - images/pill.png
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

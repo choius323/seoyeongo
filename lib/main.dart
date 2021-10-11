@@ -37,12 +37,21 @@ class MyApp extends StatelessWidget {
           // mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text(
-                '서연고',
-                style: TextStyle(fontSize: 100),
-              ),
-            ),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '서연고',
+                      style: TextStyle(fontSize: 80),
+                    ),
+                    //https://www.flaticon.com/premium-icon/pill_384260?term=pill&page=1&position=9&page=1&position=9&related_id=384260&origin=search
+                    Image.asset(
+                      'images/pill.png',
+                      height: 80,
+                    ),
+                  ],
+                )),
 
             // 버튼 배치
             Expanded(

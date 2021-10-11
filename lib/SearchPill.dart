@@ -8,6 +8,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
+import 'medicineListDB.dart';
+
 class SearchPill extends StatefulWidget {
   SearchPill({Key key}) : super(key: key);
 
@@ -19,7 +21,7 @@ class SearchPillState extends State<SearchPill> {
   bool camPermissionsGranted = false;
   List<CameraDescription> cameras;
   CameraController _controller;
-  Future<void> _initController;
+  // Future<void> _initController;
   File _imageFile;
 
   List result;
@@ -56,8 +58,8 @@ class SearchPillState extends State<SearchPill> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width / 1.5;
-    final height = MediaQuery.of(context).size.height / 1.5;
+    // final width = MediaQuery.of(context).size.width / 1.5;
+    // final height = MediaQuery.of(context).size.height / 1.5;
 
     // if (camPermissionsGranted) {
     //   // && !controller.value.isInitialized
@@ -219,65 +221,74 @@ class SearchPillState extends State<SearchPill> {
         .toList()
         .map((e) => e['label'].toString().split(' ')[1])
         .toList();
-    print(list);
     setState(() {
+      print("result :" + result.toString());
       result = list;
     });
 
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DisplayPictureScreen(
-            items: list,
+          builder: (context) => MedicineListDB(
+            itemSeqList: result,
           ),
         ));
+
+    // 임시 페이지
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => DisplayPictureScreen(
+    //         items: list,
+    //       ),
+    //     ));
   }
 }
 
 // 사용자가 촬영하거나 불러온 사진을 보여주는 위젯(화면)
-class DisplayPictureScreen extends StatelessWidget {
-  final List items;
-
-  const DisplayPictureScreen({this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('사진')),
-        // 이미지는 디바이스에 파일로 저장됩니다. 이미지를 보여주기 위해 주어진
-        // 경로로 `Image.file`을 생성하세요.
-        body: ListView.separated(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          separatorBuilder: (BuildContext context, int index) {
-            return Divider();
-          },
-          itemCount: items.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              onTap: () {},
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 40 * MediaQuery.of(context).size.width / 100,
-                    height: 40 * MediaQuery.of(context).size.width / 100,
-                    child: Text(
-                      '사진',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    alignment: Alignment.center,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('번호 : ' + items[index]),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-        ));
-  }
-}
+// class DisplayPictureScreen extends StatelessWidget {
+//   final List items;
+//
+//   const DisplayPictureScreen({this.items});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(title: Text('사진')),
+//         // 이미지는 디바이스에 파일로 저장됩니다. 이미지를 보여주기 위해 주어진
+//         // 경로로 `Image.file`을 생성하세요.
+//         body: ListView.separated(
+//           scrollDirection: Axis.vertical,
+//           shrinkWrap: true,
+//           separatorBuilder: (BuildContext context, int index) {
+//             return Divider();
+//           },
+//           itemCount: items.length,
+//           itemBuilder: (BuildContext context, int index) {
+//             return ListTile(
+//               onTap: () {},
+//               title: Row(
+//                 mainAxisAlignment: MainAxisAlignment.start,
+//                 children: [
+//                   Container(
+//                     width: 40 * MediaQuery.of(context).size.width / 100,
+//                     height: 40 * MediaQuery.of(context).size.width / 100,
+//                     child: Text(
+//                       '사진',
+//                       style: TextStyle(fontSize: 40),
+//                     ),
+//                     alignment: Alignment.center,
+//                   ),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text('번호 : ' + items[index]),
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             );
+//           },
+//         ));
+//   }
+// }

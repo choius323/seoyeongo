@@ -8,24 +8,48 @@ import 'MedicineInfo2.dart';
 import 'ViewDetailDB.dart';
 
 class MedicineListDB extends StatefulWidget {
-  final String itemseq;
-  final String itemname;
+  final String itemSeq;
+  final String itemName;
+  final String itemEnt;
+  final String itemChart;
+  final List itemSeqList;
 
   @override
-  _MedicineListDBState createState() =>
-      _MedicineListDBState(itemseq: itemseq, itemname: itemname);
+  _MedicineListDBState createState() => _MedicineListDBState(
+        itemSeq: itemSeq,
+        itemName: itemName,
+        itemEnt: itemEnt,
+        itemChart: itemChart,
+        itemSeqList: itemSeqList,
+      );
 
-  MedicineListDB({this.itemseq, this.itemname});
+  MedicineListDB({
+    this.itemSeq,
+    this.itemName,
+    this.itemEnt,
+    this.itemChart,
+    this.itemSeqList,
+  });
 }
 
 class _MedicineListDBState extends State<MedicineListDB> {
   int page = 1;
-  String tag = 'id';
-  final String itemseq;
-  final String itemname;
-  DBHelper db;
 
-  _MedicineListDBState({this.itemseq, this.itemname});
+  final String itemSeq;
+  final String itemName;
+  final String itemEnt;
+  final String itemChart;
+  final List itemSeqList;
+  DBHelper db;
+  int maxPage;
+
+  _MedicineListDBState({
+    this.itemSeq,
+    this.itemName,
+    this.itemEnt,
+    this.itemChart,
+    this.itemSeqList,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +63,12 @@ class _MedicineListDBState extends State<MedicineListDB> {
                 future: Future.delayed(
                     Duration(milliseconds: 500),
                     () => db.getDBData(
-                        page: page, itemseq: itemseq, itemname: itemname)),
+                        page: page,
+                        itemSeq: itemSeq,
+                        itemName: itemName,
+                        itemEnt: itemEnt,
+                        itemChart: itemChart,
+                        itemSeqList: itemSeqList)),
                 builder:
                     (context, AsyncSnapshot<List<MedicineInfo2>> snapshot) {
                   if (snapshot.hasError == true) {
@@ -103,9 +132,11 @@ class _MedicineListDBState extends State<MedicineListDB> {
         IconButton(
             icon: new Icon(Icons.arrow_forward_outlined),
             onPressed: () {
-              setState(() {
-                page += 1;
-              });
+              if (page < maxPage) {
+                setState(() {
+                  page += 1;
+                });
+              }
             })
       ],
     );
@@ -113,6 +144,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
 
   Widget _listView(var snapshot) {
     List<MedicineInfo2> dataList = snapshot.data;
+    maxPage = (dataList.length) ~/ 15;
 
     return ListView.separated(
       scrollDirection: Axis.vertical,
@@ -140,6 +172,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
                 width: (40 * MediaQuery.of(context).size.width / 100),
                 // width: 100,
               ),
+              SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
