@@ -1,6 +1,8 @@
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seoyeongo/DBHelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'MedicineInfo2.dart';
 
@@ -17,16 +19,40 @@ class ViewDetailDB extends StatefulWidget {
 class _ViewDetailDBState extends State<ViewDetailDB> {
   final MedicineInfo2 med;
   final DBHelper db;
+  List _bookmark;
+  SharedPreferences _preferences;
+  bool isFavorite = true;
 
   _ViewDetailDBState({this.med, this.db});
 
   @override
   Widget build(BuildContext context) {
-    print("id : $med");
-    print("db : $db");
+    checkPreferences().then((value) => isFavorite = value);
+
+    // print("id : $med");
+    // print("db : $db");
     return Scaffold(
       appBar: AppBar(
         title: Text('검색 결과'),
+        actions: [
+          FavoriteButton(
+            //수정 필요(아이콘 항상 켜져 있음)
+            isFavorite: true,
+            valueChanged: (_isFavorite) {
+              if (_isFavorite == true) {
+                _bookmark.add(med.itemseq);
+                print(_bookmark.toString());
+              } else {
+                _bookmark.remove(med.itemseq);
+                print(_bookmark.toString());
+              }
+              setPreferences();
+            },
+          ),
+          switchStarIcon(),
+          new IconButton(
+              onPressed: () => {}, icon: new Icon(CupertinoIcons.star))
+        ],
       ),
       // body: FutureBuilder(
       //   future: db.getDetailData(med.id),
@@ -50,6 +76,15 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      checkPreferences();
+    });
+  }
+
   Widget _scrollView() {
     //   MedicineInfo2 data = snapshot.data[0];
 
@@ -65,6 +100,7 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
               height: MediaQuery.of(context).size.height * 0.3,
             ),
             // SizedBox(height: 20),
+            // a ?? b   ==   a ? a==null ? b
             Text('제품명 : ' + (med.itemname ?? '없음')),
             Text('제품번호 : ' + (med.itemseq ?? '없음')),
             Text('제조사 : ' + (med.entpname ?? '없음')),
@@ -88,6 +124,28 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
     } else {
       return text;
     }
+  }
+
+  Widget switchStarIcon() {
+    return new IconButton(
+        onPressed: () => {}, icon: new Icon(CupertinoIcons.star));
+  }
+
+  Future<dynamic> checkPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
+    _bookmark = _preferences.getStringList('bookmarkList');
+    if (_bookmark.contains(med.itemseq)) {
+      isFavorite = true;
+      return true;
+    } else {
+      isFavorite = false;
+      return false;
+    }
+    print(_bookmark.contains(med.itemseq));
+  }
+
+  Future setPreferences() async {
+    await _preferences.setStringList('bookmarkList', _bookmark);
   }
 
 // Widget _scrollView(var snapshot) {
