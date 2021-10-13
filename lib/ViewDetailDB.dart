@@ -1,6 +1,6 @@
-import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:seoyeongo/DBHelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +21,8 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
   final DBHelper db;
   List _bookmark;
   SharedPreferences _preferences;
-  bool isFavorite = true;
+  bool isFavorite;
+  bool isChanged = false;
 
   _ViewDetailDBState({this.med, this.db});
 
@@ -35,43 +36,39 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
       appBar: AppBar(
         title: Text('검색 결과'),
         actions: [
-          FavoriteButton(
-            //수정 필요(아이콘 항상 켜져 있음)
-            isFavorite: true,
-            valueChanged: (_isFavorite) {
-              if (_isFavorite == true) {
-                _bookmark.add(med.itemseq);
-                print(_bookmark.toString());
-              } else {
-                _bookmark.remove(med.itemseq);
-                print(_bookmark.toString());
-              }
-              setPreferences();
-            },
-          ),
-          switchStarIcon(),
+          // FavoriteButton(
+          //   //수정 필요(아이콘 항상 켜져 있음)
+          //   isFavorite: isFavorite,
+          //   valueChanged: (_isFavorite) {
+          //     if (_isFavorite == true) {
+          //       _bookmark.add(med.itemseq);
+          //       print(_bookmark.toString());
+          //     } else {
+          //       _bookmark.remove(med.itemseq);
+          //       print(_bookmark.toString());
+          //     }
+          //     setPreferences();
+          //   },
+          // ),
+          // switchStarIcon(),
           new IconButton(
-              onPressed: () => {}, icon: new Icon(CupertinoIcons.star))
+              onPressed: () {
+                if (_bookmark.contains(med.itemseq) != true) {
+                  _bookmark.add(med.itemseq);
+                  Fluttertoast.showToast(
+                      msg: '즐겨찾기에 추가됐습니다.', toastLength: Toast.LENGTH_SHORT);
+                } else {
+                  _bookmark.remove(med.itemseq);
+                  Fluttertoast.showToast(
+                      msg: '즐겨찾기에서 제거됐습니다.', toastLength: Toast.LENGTH_SHORT);
+                }
+                isChanged = true;
+                print(_bookmark.toString());
+                setPreferences();
+              },
+              icon: new Icon(Icons.star)),
         ],
       ),
-      // body: FutureBuilder(
-      //   future: db.getDetailData(med.id),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasError == true) {
-      //       print('snapshot.hasError -> $snapshot.hasError');
-      //       // 에러 메시지는 굳이 화면 가운데에 놓을 필요가 없다.
-      //       return Text('${snapshot.error}');
-      //     } else if (snapshot.connectionState == ConnectionState.done) {
-      //       // 나머지 공간 전체를 사용하는데, 전체 공간을 사용하지 않는 위젯이라면 가운데에 배치.
-      //       return _scrollView(snapshot);
-      //     }
-      //
-      //     // 인디케이터가 다른 위젯들처럼 화면 가운데에 위치시킨다.
-      //     return Center(
-      //       child: CircularProgressIndicator(),
-      //     );
-      //   },
-      // ),
       body: _scrollView(),
     );
   }
@@ -83,6 +80,14 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
     setState(() {
       checkPreferences();
     });
+  }
+
+
+  @override
+  void dispose() {
+    print("${context.widget} isChanged : $isChanged");
+    // Navigator.pop(context, isChanged);
+    super.dispose();
   }
 
   Widget _scrollView() {

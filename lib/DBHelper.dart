@@ -60,18 +60,22 @@ class DBHelper {
     String query;
 
     print('getData method');
-    if (itemSeqList != null){
-       query = "Select * From grn_info Where ";
-      for(String seq in itemSeqList){
-        query += "ITEM_SEQ Like \'\%$seq\%\' or ";
+    if (itemSeqList != null) {
+      //이미지 분류, 즐겨찾기
+      query = "Select * From grn_info Where";
+      for (String seq in itemSeqList) {
+        query += " ITEM_SEQ Like \'$seq\' or";
       }
-      query += "ITEM_SEQ Like \'\%\%\' Limit ?, 15;";
+      query = query.substring(0, query.length - 2);
+      query += " Limit ?, 15;";
     } else {
-      query = """Select * From grn_info 
-        Where ITEM_SEQ Like \'\%$itemSeq\%\' and
-        ITEM_NAME Like \'\%$itemName\%\' and
-        ENTP_NAME Like \'\%$itemEnt\%\' and
-        CHART Like \'\%$itemChart\%\'
+      //알약 검색
+      query = """
+        Select * From grn_info 
+        Where ITEM_SEQ Like \'\%$itemSeq\%\'and
+          ITEM_NAME Like \'\%$itemName\%\' and
+          ENTP_NAME Like \'\%$itemEnt\%\' and
+          CHART Like \'\%$itemChart\%\'      
         Limit ?, 15;
         """;
     }
@@ -79,9 +83,12 @@ class DBHelper {
     List args = [
       // itemseq,
       // itemname,
-      ((page - 1) * 15 + 1).toString(),
+      ((page - 1) * 15).toString(),
     ];
+
+    print("query : " + query);
     var res = await _db.rawQuery(query, args);
+    print("res : " + res.toString());
 
     // var list = res.isNotEmpty ? mapToList(res) : mapToList(res);
     var list = mapToList(res);
