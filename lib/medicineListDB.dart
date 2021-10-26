@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:seoyeongo/DBHelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MedicineInfo2.dart';
 import 'ViewDetailDB.dart';
 
 class MedicineListDB extends StatefulWidget {
@@ -41,6 +40,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
   final String itemName;
   final String itemEnt;
   final String itemChart;
+  String title = "의약품 목록";
   List itemSeqList;
   DBHelper db;
   int maxPage;
@@ -57,7 +57,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('의약품 목록'),
+          title: Text(title),
           actions: [
             new IconButton(
                 onPressed: () {
@@ -82,8 +82,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
                         itemEnt: itemEnt,
                         itemChart: itemChart,
                         itemSeqList: itemSeqList)),
-                builder:
-                    (context, AsyncSnapshot<List<MedicineInfo2>> snapshot) {
+                builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.hasError == true) {
                     print('snapshot.hasError -> ${snapshot.error}');
                     if (snapshot.data == null) {
@@ -96,8 +95,11 @@ class _MedicineListDBState extends State<MedicineListDB> {
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     // 나머지 공간 전체를 사용하는데, 전체 공간을 사용하지 않는 위젯이라면 가운데에 배치.
                     if (snapshot.data.isEmpty) {
+                      print("snapshot is empty");
                       return SizedBox();
                     } else {
+                      print("print snapshot");
+                      print(snapshot.data[0]);
                       return Expanded(child: _listView(snapshot));
                     }
                   }
@@ -133,6 +135,12 @@ class _MedicineListDBState extends State<MedicineListDB> {
   //   dataList = db.getDBData();
   // }
 
+  Future changeAppbar(int length) async{
+    setState(() {
+      title = "의약품 목록 (검색 결과 : $length)";
+    });
+  }
+
   Widget _pageButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -163,8 +171,13 @@ class _MedicineListDBState extends State<MedicineListDB> {
 
   //검색결과 목록 출력
   Widget _listView(var snapshot) {
-    List<MedicineInfo2> dataList = snapshot.data;
-    maxPage = (dataList.length) ~/ 15;
+    List dataList = snapshot.data;
+    // print('aaa ${dataList.removeLast()}');
+    int length = dataList.removeLast();
+    // changeAppbar(length);
+    maxPage = length ~/ 15;
+    // print("maxPage : " + maxPage.runtimeType.toString());
+    dataList = dataList[0];
 
     return ListView.separated(
       scrollDirection: Axis.vertical,
@@ -172,7 +185,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
       separatorBuilder: (BuildContext context, int index) {
         return Divider();
       },
-      itemCount: dataList.length,
+      itemCount: dataList.length - 1,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           onTap: () async {

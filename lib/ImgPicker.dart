@@ -36,7 +36,7 @@ class MyImagePickerState extends State {
     // 여기가 모델 실행 부분   나머지는 사진 입력+불러오기
     await Tflite.loadModel(
       // pubsepc.yaml 파일에 모델,레이블 파일 등록
-        model: "assets/model2.tflite",
+        model: "assets/pill_clf.tflite",
         labels:
         "assets/labels.txt"); // model, labels 는 assets 폴더에 모델 (*.tflite) 이랑, 클래스별 텍스트 파일 넣은거 씀
 
@@ -44,7 +44,7 @@ class MyImagePickerState extends State {
       //모델에 찍은 이미지 넣고 돌림
       //binary: imageURI,
         path: path3,
-        numResults: 25,
+        numResults: 15,
         imageMean: 127.5,
         imageStd: 127.5,
         threshold: 0.5);

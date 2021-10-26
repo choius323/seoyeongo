@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:seoyeongo/DBHelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'MedicineInfo2.dart';
 
@@ -82,7 +83,6 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
     });
   }
 
-
   @override
   void dispose() {
     print("${context.widget} isChanged : $isChanged");
@@ -104,18 +104,22 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
               med.itemimage,
               height: MediaQuery.of(context).size.height * 0.3,
             ),
+            ElevatedButton(
+              onPressed: _launchURL,
+              //   onPressed: () {js.context.callMethod('open', ['url' + med.itemseq]);},
+              child: Text("상세정보 보기"),),
             // SizedBox(height: 20),
             // a ?? b   ==   a ? a==null ? b
-            Text('제품명 : ' + (med.itemname ?? '없음')),
-            Text('제품번호 : ' + (med.itemseq ?? '없음')),
-            Text('제조사 : ' + (med.entpname ?? '없음')),
-            Text('성상 : ' + (med.chart ?? '없음')),
-            Text('앞 글자 : ' + (med.printfront ?? '없음')),
-            Text('뒤 글자 : ' + (med.printback ?? '없음')),
-            Text('앞 색 : ' + (med.colorclass1 ?? '없음')),
-            Text('뒤 색 : ' + (med.colorclass2 ?? '없음')),
-            Text('앞 모양 : ' + (med.markcodefront ?? '없음')),
-            Text('뒤 모양 : ' + (med.markcodeback ?? '없음')),
+            SelectableText('제품명 : ' + (med.itemname ?? '없음')),
+            SelectableText('제품번호 : ' + (med.itemseq ?? '없음')),
+            SelectableText('제조사 : ' + (med.entpname ?? '없음')),
+            SelectableText('성상 : ' + (med.chart ?? '없음')),
+            SelectableText('앞 글자 : ' + (med.printfront ?? '없음')),
+            SelectableText('뒤 글자 : ' + (med.printback ?? '없음')),
+            SelectableText('앞 색 : ' + (med.colorclass1 ?? '없음')),
+            SelectableText('뒤 색 : ' + (med.colorclass2 ?? '없음')),
+            SelectableText('앞 모양 : ' + (med.markcodefront ?? '없음')),
+            SelectableText('뒤 모양 : ' + (med.markcodeback ?? '없음')),
           ],
         ),
       ),
@@ -151,6 +155,15 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
 
   Future setPreferences() async {
     await _preferences.setStringList('bookmarkList', _bookmark);
+  }
+
+  _launchURL() async {
+    String url = "https://nedrug.mfds.go.kr/pbp/CCBBB01/getItemDetail?itemSeq=" + med.itemseq;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
 // Widget _scrollView(var snapshot) {

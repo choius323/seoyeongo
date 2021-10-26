@@ -49,7 +49,7 @@ class DBHelper {
     );
   }
 
-  Future<List<MedicineInfo2>> getDBData(
+  Future<List> getDBData(
       {int page,
       String itemSeq,
       String itemName,
@@ -58,6 +58,7 @@ class DBHelper {
       List itemSeqList}) async {
 // 모든 MedicineInfo를 얻기 위해 테이블에 질의합니다.
     String query;
+    int length;
 
     print('getData method');
     if (itemSeqList != null) {
@@ -67,7 +68,6 @@ class DBHelper {
         query += " ITEM_SEQ Like \'$seq\' or";
       }
       query = query.substring(0, query.length - 2);
-      query += " Limit ?, 15;";
     } else {
       //알약 검색
       query = """
@@ -75,10 +75,16 @@ class DBHelper {
         Where ITEM_SEQ Like \'\%$itemSeq\%\'and
           ITEM_NAME Like \'\%$itemName\%\' and
           ENTP_NAME Like \'\%$itemEnt\%\' and
-          CHART Like \'\%$itemChart\%\'      
-        Limit ?, 15;
+          CHART Like \'\%$itemChart\%\'
         """;
     }
+
+    String queryLength = "Select count(*) as 'count' From (" + query + ") as result";
+    var res = await _db.rawQuery(queryLength, []);
+    print("res1 : $res");
+    length = int.parse(res[0].toString().split(" ")[1].split("}")[0]);
+    print("count : $length");
+
 
     List args = [
       // itemseq,
@@ -86,16 +92,17 @@ class DBHelper {
       ((page - 1) * 15).toString(),
     ];
 
+    query += " Limit ?, 15;";
     print("query : " + query);
-    var res = await _db.rawQuery(query, args);
-    print("res : " + res.toString());
+    res = await _db.rawQuery(query, args);
+    print("res2 : " + res.toString());
 
     // var list = res.isNotEmpty ? mapToList(res) : mapToList(res);
     var list = mapToList(res);
     // print("list" + list.toString());
 
-    print("itemseq " + list[0].toJson().toString());
-    return list;
+    print("itemseq : " + list[0].toJson().toString());
+    return [list, length];
   }
 
 //   Future<List<MedicineInfo2>> getDBDataSeq(
