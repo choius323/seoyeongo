@@ -174,10 +174,12 @@ class _MedicineListDBState extends State<MedicineListDB> {
     List dataList = snapshot.data;
     // print('aaa ${dataList.removeLast()}');
     int length = dataList.removeLast();
+    print("length : $length");
     // changeAppbar(length);
     maxPage = length ~/ 15;
     // print("maxPage : " + maxPage.runtimeType.toString());
     dataList = dataList[0];
+    print("dataList : ${dataList}");
 
     return ListView.separated(
       scrollDirection: Axis.vertical,
@@ -185,7 +187,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
       separatorBuilder: (BuildContext context, int index) {
         return Divider();
       },
-      itemCount: dataList.length - 1,
+      itemCount: dataList.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           onTap: () async {

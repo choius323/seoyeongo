@@ -70,21 +70,44 @@ class DBHelper {
       query = query.substring(0, query.length - 2);
     } else {
       //알약 검색
+      List chart = itemChart.split(" ");
       query = """
         Select * From grn_info 
         Where ITEM_SEQ Like \'\%$itemSeq\%\'and
           ITEM_NAME Like \'\%$itemName\%\' and
           ENTP_NAME Like \'\%$itemEnt\%\' and
-          CHART Like \'\%$itemChart\%\'
-        """;
+          """;
+      for (String c in chart) {
+        query += """
+        (CHART Like \'\%$c\%\' or
+          PRINT_FRONT Like \'\%$c\%\' or
+          PRINT_BACK Like \'\%$c\%\' or
+          COLOR_CLASS1 Like \'\%$c\%\' or
+          COLOR_CLASS2 Like \'\%$c\%\' or
+          DRUG_SHAPE Like \'\%$c\%\' or
+          MARK_CODE_BACK Like \'\%$c\%\' or
+          MARK_CODE_FRONT Like \'\%$c\%\' or
+          """;
+        query = query.substring(0, query.lastIndexOf("or") - 1);
+        query += ") and";
+      }
+      query = query.substring(0, query.lastIndexOf("and") - 1);
+      // CHART Like \'\%$itemChart\%\' or
+      // PRINT_FRONT Like \'\%$itemChart\%\' or
+      // PRINT_BACK Like \'\%$itemChart\%\' or
+      // COLOR_CLASS1 Like \'\%$itemChart\%\' or
+      // COLOR_CLASS2 Like \'\%$itemChart\%\' or
+      // DRUG_SHAPE Like \'\%$itemChart\%\' or
+      // MARK_CODE_BACK Like \'\%$itemChart\%\' or
+      // MARK_CODE_FRONT Like \'\%$itemChart\%\'
     }
 
-    String queryLength = "Select count(*) as 'count' From (" + query + ") as result";
+    String queryLength =
+        "Select count(*) as 'count' From (" + query + ") as result";
     var res = await _db.rawQuery(queryLength, []);
     print("res1 : $res");
     length = int.parse(res[0].toString().split(" ")[1].split("}")[0]);
     print("count : $length");
-
 
     List args = [
       // itemseq,

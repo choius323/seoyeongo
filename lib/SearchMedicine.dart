@@ -53,7 +53,7 @@ class SearchMedicineState extends State<SearchMedicine> {
               controller: itemChartController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: '글자, 모양, 색',
+                labelText: '글자, 모양, 색 (띄어쓰기로 여러개 구분 입력)',
               ),
             ),
             SizedBox(height: 10),
