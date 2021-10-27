@@ -187,9 +187,10 @@ class _MedicineListDBState extends State<MedicineListDB> {
     print("length : $length");
     maxPage = length ~/ 15;
     dataList = dataList[0];
-    print("dataList : ${dataList}");
+    // dataList.forEach((a) => print(a.itemseq));
     
     // 이미지 분류 결과와 매칭하여 순서 정렬
+    // 15개(한 페이지) 넘어가는 수가 검색되면 정렬이 제대로 안 됨. DB에서 검색 전에 정렬해야함.
     if (searchType == MedicineListDB.SEARCH_PILL) {
       dataList.sort((a,b) => itemSeqList.indexOf(a.itemseq).compareTo(itemSeqList.indexOf(b.itemseq)));
     } 
