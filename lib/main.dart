@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MedicineListDB(
+                                searchType: MedicineListDB.BOOKMARK,
                                 itemSeqList:
                                     _preferences.getStringList('bookmarkList'),
                               ),

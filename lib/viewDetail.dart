@@ -87,13 +87,6 @@ class _ViewDetailState extends State<ViewDetail> {
       ),
     );
   }
-
-  _getTextView(Map items) {
-    List<Text> text = [Text('123'), Text('1356136')];
-    // text.add(Text('123'));
-    // text.add(Text('14124'));
-    return text;
-  }
 }
 
 Future<String> fetchString(List<String> query) async {

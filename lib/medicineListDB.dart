@@ -14,6 +14,11 @@ class MedicineListDB extends StatefulWidget {
   final String itemEnt;
   final String itemChart;
   final List itemSeqList;
+  final int searchType;
+
+  static const int SEARCH_MEDICINE = 0;
+  static const int SEARCH_PILL = 1;
+  static const int BOOKMARK = 2;
 
   @override
   _MedicineListDBState createState() => _MedicineListDBState(
@@ -22,6 +27,7 @@ class MedicineListDB extends StatefulWidget {
         itemEnt: itemEnt,
         itemChart: itemChart,
         itemSeqList: itemSeqList,
+        searchType: searchType,
       );
 
   MedicineListDB({
@@ -30,6 +36,7 @@ class MedicineListDB extends StatefulWidget {
     this.itemEnt,
     this.itemChart,
     this.itemSeqList,
+    this.searchType,
   });
 }
 
@@ -40,12 +47,14 @@ class _MedicineListDBState extends State<MedicineListDB> {
   final String itemName;
   final String itemEnt;
   final String itemChart;
+  final int searchType;
   String title = "의약품 목록";
   List itemSeqList;
   DBHelper db;
   int maxPage;
 
   _MedicineListDBState({
+    this.searchType,
     this.itemSeq,
     this.itemName,
     this.itemEnt,
@@ -55,6 +64,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
 
   @override
   Widget build(BuildContext context) {
+    print(searchType);
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
@@ -81,7 +91,8 @@ class _MedicineListDBState extends State<MedicineListDB> {
                         itemName: itemName,
                         itemEnt: itemEnt,
                         itemChart: itemChart,
-                        itemSeqList: itemSeqList)),
+                        itemSeqList: itemSeqList,
+                        searchType: searchType)),
                 builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.hasError == true) {
                     print('snapshot.hasError -> ${snapshot.error}');
@@ -135,7 +146,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
   //   dataList = db.getDBData();
   // }
 
-  Future changeAppbar(int length) async{
+  Future changeAppbar(int length) async {
     setState(() {
       title = "의약품 목록 (검색 결과 : $length)";
     });
@@ -172,14 +183,16 @@ class _MedicineListDBState extends State<MedicineListDB> {
   //검색결과 목록 출력
   Widget _listView(var snapshot) {
     List dataList = snapshot.data;
-    // print('aaa ${dataList.removeLast()}');
     int length = dataList.removeLast();
     print("length : $length");
-    // changeAppbar(length);
     maxPage = length ~/ 15;
-    // print("maxPage : " + maxPage.runtimeType.toString());
     dataList = dataList[0];
     print("dataList : ${dataList}");
+    
+    // 이미지 분류 결과와 매칭하여 순서 정렬
+    if (searchType == MedicineListDB.SEARCH_PILL) {
+      dataList.sort((a,b) => itemSeqList.indexOf(a.itemseq).compareTo(itemSeqList.indexOf(b.itemseq)));
+    } 
 
     return ListView.separated(
       scrollDirection: Axis.vertical,
@@ -198,12 +211,12 @@ class _MedicineListDBState extends State<MedicineListDB> {
                           med: dataList[index],
                           db: db,
                         )));
-            if (itemSeqList != null) {
-              getRequest();
-              setState(() {
-                getDB();
-              });
-            }
+            // if (itemSeqList != null) {
+            //   getRequest();
+            //   setState(() {
+            //     getDB();
+            //   });
+            // }
           },
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seoyeongo/medicineList.dart';
 
 import 'medicineListDB.dart';
 
@@ -57,24 +56,25 @@ class SearchMedicineState extends State<SearchMedicine> {
               ),
             ),
             SizedBox(height: 10),
+            // OutlinedButton(
+            //   child: Text('검색'),
+            //   onPressed: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) =>
+            //               MedicineList(itemNameController.text),
+            //         ));
+            //   },
+            // ),
             OutlinedButton(
               child: Text('검색'),
               onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          MedicineList(itemNameController.text),
-                    ));
-              },
-            ),
-            OutlinedButton(
-              child: Text('내장 DB 검색'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
                       builder: (context) => MedicineListDB(
+                        searchType: MedicineListDB.SEARCH_MEDICINE,
                         itemSeq: itemSeqController.text,
                         itemName: itemNameController.text,
                         itemEnt: itemEntController.text,

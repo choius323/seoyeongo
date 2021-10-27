@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:seoyeongo/medicineListDB.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'MedicineInfo2.dart';
@@ -55,14 +56,16 @@ class DBHelper {
       String itemName,
       String itemEnt,
       String itemChart,
-      List itemSeqList}) async {
+      List itemSeqList,
+      int searchType}) async {
 // 모든 MedicineInfo를 얻기 위해 테이블에 질의합니다.
+    print("DBHelpder.dart searchType : $searchType");
     String query;
     int length;
 
     print('getData method');
-    if (itemSeqList != null) {
-      //이미지 분류, 즐겨찾기
+    if (searchType == MedicineListDB.BOOKMARK || searchType == MedicineListDB.SEARCH_PILL) {
+      //즐겨찾기, 이미지 분류
       query = "Select * From grn_info Where";
       for (String seq in itemSeqList) {
         query += " ITEM_SEQ Like \'$seq\' or";
