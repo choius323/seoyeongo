@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
@@ -20,16 +21,16 @@ class SearchPill extends StatefulWidget {
 class SearchPillState extends State<SearchPill> {
   bool camPermissionsGranted = false;
   List<CameraDescription> cameras;
-  CameraController _controller;
 
   File _imageFile;
 
   List result;
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+
+  // @override
+  // void dispose() {
+  //   _controller.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +41,18 @@ class SearchPillState extends State<SearchPill> {
     //   // && !controller.value.isInitialized
     return Scaffold(
         appBar: AppBar(
-          title: Text('낱알 검색'),
+          title: Text("낱알 검색"),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               _imageFile == null
-                  ? Text('No image selected.')
+                  ? Text(
+                      '사진을 선택해주세요.\n사각형에 딱 맞을수록 더 정확한 결과가 나옵니다.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    )
                   : Image.file(_imageFile,
                       width: 224.0, height: 224.0, fit: BoxFit.cover),
               // takePictureButton(context),
@@ -154,3 +159,5 @@ class SearchPillState extends State<SearchPill> {
     await Tflite.close();
   }
 }
+
+

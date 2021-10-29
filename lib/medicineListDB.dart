@@ -225,6 +225,9 @@ class _MedicineListDBState extends State<MedicineListDB> {
               Image.network(
                 dataList[index].itemimage,
                 width: (40 * MediaQuery.of(context).size.width / 100),
+                errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                  return new Icon(Icons.error,size: (40 * MediaQuery.of(context).size.width / 130),);
+                },
                 // width: 100,
               ),
               SizedBox(width: 10),

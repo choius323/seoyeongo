@@ -103,11 +103,19 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
             Image.network(
               med.itemimage,
               height: MediaQuery.of(context).size.height * 0.3,
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+                return new Icon(
+                  Icons.error,
+                  size: (40 * MediaQuery.of(context).size.width / 130),
+                );
+              },
             ),
-            ElevatedButton(
+            OutlinedButton(
               onPressed: _launchURL,
               //   onPressed: () {js.context.callMethod('open', ['url' + med.itemseq]);},
-              child: Text("상세정보 보기"),),
+              child: Text("상세정보 보기"),
+            ),
             // SizedBox(height: 20),
             // a ?? b   ==   a ? a==null ? b
             SelectableText('제품명 : ' + (med.itemname ?? '없음')),
@@ -150,7 +158,7 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
       isFavorite = false;
       return false;
     }
-    print(_bookmark.contains(med.itemseq));
+    // print(_bookmark.contains(med.itemseq));
   }
 
   Future setPreferences() async {
@@ -158,7 +166,9 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
   }
 
   _launchURL() async {
-    String url = "https://nedrug.mfds.go.kr/pbp/CCBBB01/getItemDetail?itemSeq=" + med.itemseq;
+    String url =
+        "https://nedrug.mfds.go.kr/pbp/CCBBB01/getItemDetail?itemSeq=" +
+            med.itemseq;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
