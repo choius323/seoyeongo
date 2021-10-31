@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'medicineListDB.dart';
 
@@ -53,6 +54,8 @@ class SearchMedicineState extends State<SearchMedicine> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: '글자, 모양, 색 (띄어쓰기로 여러개 구분 입력)',
+                hintText: "흰색 타원형 분할선",
+                hintStyle: TextStyle(color: Color.fromARGB(150, 102, 102, 102)),
               ),
             ),
             SizedBox(height: 10),

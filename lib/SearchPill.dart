@@ -123,7 +123,7 @@ class SearchPillState extends State<SearchPill> {
     List list = [];
     await Tflite.loadModel(
       // pubsepc.yaml 파일에 모델,레이블 파일 등록
-      model: "assets/pill_100_Mo2.tflite",
+      model: "assets/pill_100_Mo2_40.tflite",
       labels: "assets/labels.txt",
     ); // model, labels 는 assets 폴더에 모델 (*.tflite) 이랑, 클래스별 텍스트 파일 넣은거 씀
 

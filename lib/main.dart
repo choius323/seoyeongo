@@ -20,20 +20,32 @@ void main() {
         title: '서연고',
         home: MyApp(),
         theme: ThemeData(
-            scaffoldBackgroundColor: Color.fromARGB(230, 51, 204, 204),
-            appBarTheme: AppBarTheme(
-                centerTitle: true,
-                backgroundColor: Color.fromARGB(150, 30, 190, 174)),
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-                  elevation: 0,
-                  primary: Colors.white70,
-                  // onSurface: Colors.red,
-                  textStyle: TextStyle(fontSize: 20),
-                  minimumSize: Size(100, 20),
-                  backgroundColor: Colors.black12),
-            ))),
+          textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Color.fromARGB(255, 24, 24, 24),
+            selectionHandleColor: Color.fromARGB(255, 48, 118, 255),
+          ),
+          scaffoldBackgroundColor: Color.fromARGB(230, 41, 199, 213),
+          appBarTheme: AppBarTheme(
+              centerTitle: true,
+              backgroundColor: Color.fromARGB(200, 31, 205, 187)),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+                elevation: 0,
+                primary: Color.fromARGB(255, 40, 40, 40),
+                // onSurface: Colors.red,
+                textStyle: TextStyle(fontSize: 20),
+                minimumSize: Size(100, 20),
+                backgroundColor: Colors.black12),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+                focusColor: Colors.black54,
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: Color.fromARGB(255, 43, 43, 43))),
+                labelStyle: TextStyle(color: Color.fromARGB(255, 43, 43, 43)),
+                border: OutlineInputBorder(),)
+        )),
   );
 }
 
@@ -54,8 +66,8 @@ class MyApp extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-            Color.fromARGB(250, 51, 204, 204),
-            Color.fromARGB(130, 40, 197, 202)
+            Color.fromARGB(255, 37, 219, 229),
+            Color.fromARGB(200, 35, 225, 231)
           ])),
       child: Scaffold(
         appBar: AppBar(

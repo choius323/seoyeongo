@@ -33,7 +33,7 @@ class _ViewDetailState extends State<ViewDetail> {
             return Text('${snapshot.error}');
           } else if (snapshot.connectionState == ConnectionState.done) {
             // 나머지 공간 전체를 사용하는데, 전체 공간을 사용하지 않는 위젯이라면 가운데에 배치.
-            return _ScrollView(snapshot.data);
+            return _scrollView(snapshot.data);
           }
 
           // 인디케이터가 다른 위젯들처럼 화면 가운데에 위치시킨다.
@@ -61,7 +61,7 @@ class _ViewDetailState extends State<ViewDetail> {
     );
   }
 
-  Widget _ScrollView(String data) {
+  Widget _scrollView(String data) {
     dynamic items = json.decode(data);
 
     return SingleChildScrollView(
