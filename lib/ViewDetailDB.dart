@@ -92,6 +92,19 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
 
   Widget _scrollView() {
     //   MedicineInfo2 data = snapshot.data[0];
+    String contentsStr = "";
+
+    contentsStr = contentsStr +
+        ('제품명 : ' + (med.itemname ?? '없음')  + '\n') +
+        ('제품번호 : ' + (med.itemseq ?? '없음') + '\n') +
+        ('제조사 : ' + (med.entpname ?? '없음') + '\n') +
+        ('성상 : ' + (med.chart ?? '없음') + '\n') +
+        ('앞 글자 : ' + (med.printfront ?? '없음') + '\n') +
+        ('뒤 글자 : ' + (med.printback ?? '없음') + '\n') +
+        ('앞 색 : ' + (med.colorclass1 ?? '없음')) +
+        ('뒤 색 : ' + (med.colorclass2 ?? '없음') + '\n') +
+        ('앞 모양 : ' + (med.markcodefront ?? '없음') + '\n') +
+        ('뒤 모양 : ' + (med.markcodeback ?? '없음') + '\n');
 
     return SingleChildScrollView(
       child: Center(
@@ -100,34 +113,37 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Image.network(
-              med.itemimage,
-              height: MediaQuery.of(context).size.height * 0.3,
-              errorBuilder: (BuildContext context, Object exception,
-                  StackTrace stackTrace) {
-                return new Icon(
-                  Icons.error,
-                  size: (40 * MediaQuery.of(context).size.width / 130),
-                );
-              },
-            ),
+            TextButton(
+                child: Image.network(
+                  med.itemimage,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace stackTrace) {
+                    return new Icon(
+                      Icons.error,
+                      size: (40 * MediaQuery.of(context).size.width / 130),
+                    );
+                  },
+                ),
+                onPressed: _viewImage),
             OutlinedButton(
               onPressed: _launchURL,
               //   onPressed: () {js.context.callMethod('open', ['url' + med.itemseq]);},
               child: Text("상세정보 보기"),
             ),
-            // SizedBox(height: 20),
+            SizedBox(height: 20),
             // a ?? b   ==   a ? a==null ? b
-            SelectableText('제품명 : ' + (med.itemname ?? '없음')),
-            SelectableText('제품번호 : ' + (med.itemseq ?? '없음')),
-            SelectableText('제조사 : ' + (med.entpname ?? '없음')),
-            SelectableText('성상 : ' + (med.chart ?? '없음')),
-            SelectableText('앞 글자 : ' + (med.printfront ?? '없음')),
-            SelectableText('뒤 글자 : ' + (med.printback ?? '없음')),
-            SelectableText('앞 색 : ' + (med.colorclass1 ?? '없음')),
-            SelectableText('뒤 색 : ' + (med.colorclass2 ?? '없음')),
-            SelectableText('앞 모양 : ' + (med.markcodefront ?? '없음')),
-            SelectableText('뒤 모양 : ' + (med.markcodeback ?? '없음')),
+            // SelectableText('제품명 : ' + (med.itemname ?? '없음')),
+            // SelectableText('제품번호 : ' + (med.itemseq ?? '없음')),
+            // SelectableText('제조사 : ' + (med.entpname ?? '없음')),
+            // SelectableText('성상 : ' + (med.chart ?? '없음')),
+            // SelectableText('앞 글자 : ' + (med.printfront ?? '없음')),
+            // SelectableText('뒤 글자 : ' + (med.printback ?? '없음')),
+            // SelectableText('앞 색 : ' + (med.colorclass1 ?? '없음')),
+            // SelectableText('뒤 색 : ' + (med.colorclass2 ?? '없음')),
+            // SelectableText('앞 모양 : ' + (med.markcodefront ?? '없음')),
+            // SelectableText('뒤 모양 : ' + (med.markcodeback ?? '없음')),
+            SelectableText(contentsStr, textScaleFactor: 1.5, style: TextStyle(height: 1.5),),
           ],
         ),
       ),
@@ -169,6 +185,16 @@ class _ViewDetailDBState extends State<ViewDetailDB> {
     String url =
         "https://nedrug.mfds.go.kr/pbp/CCBBB01/getItemDetail?itemSeq=" +
             med.itemseq;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _viewImage() async {
+    String url = med.itemimage;
+    print(med.itemimage);
     if (await canLaunch(url)) {
       await launch(url);
     } else {

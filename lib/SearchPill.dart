@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
@@ -54,7 +55,8 @@ class SearchPillState extends State<SearchPill> {
                       style: TextStyle(fontSize: 20),
                     )
                   : Image.file(_imageFile,
-                      width: 224.0, height: 224.0, fit: BoxFit.cover),
+                      // width: 300.0,
+                      height: 224.0),
               // takePictureButton(context),
               OutlinedButton(
                   onPressed: () => _loadImage(ImageSource.camera),
@@ -74,6 +76,19 @@ class SearchPillState extends State<SearchPill> {
                   onPressed: () => classifyImage(_imageFile.path),
                   child: Text(
                     '이미지 분류',
+                    style: TextStyle(fontSize: 25),
+                  )),
+              OutlinedButton(
+                  onPressed: () {
+                    print(_imageFile.path);
+                    GallerySaver.saveImage(_imageFile.path)
+                        .then((value) => print('>>>> save value= $value'))
+                        .catchError((err) {
+                      print('error :( $err');
+                    });
+                  },
+                  child: Text(
+                    '이미지 저장',
                     style: TextStyle(fontSize: 25),
                   )),
               // Text(result == null ? 'result' : result.toString()),
@@ -99,12 +114,12 @@ class SearchPillState extends State<SearchPill> {
         sourcePath: picked.path,
         aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         compressQuality: 100,
-        maxHeight: 700,
-        maxWidth: 700,
+        maxHeight: 1000,
+        maxWidth: 1000,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
+            toolbarColor: Colors.blue,
             toolbarWidgetColor: Colors.white,
             lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
@@ -159,5 +174,3 @@ class SearchPillState extends State<SearchPill> {
     await Tflite.close();
   }
 }
-
-

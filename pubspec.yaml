@@ -39,6 +39,7 @@ dependencies:
   shared_preferences:
   fluttertoast:
   url_launcher:
+  gallery_saver: ^2.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

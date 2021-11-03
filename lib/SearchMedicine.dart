@@ -20,11 +20,11 @@ class SearchMedicineState extends State<SearchMedicine> {
       appBar: AppBar(
         title: Text('의약품 검색'),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             TextField(
               controller: itemNameController,
               decoration: InputDecoration(
