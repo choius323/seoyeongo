@@ -136,8 +136,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
   }
 
   Future getDB() async {
-    db = DBHelper();
-    db.openDB();
+    await (db= DBHelper()).openDB();
     // Future.delayed(Duration(seconds: 1), () => getData());
   }
 

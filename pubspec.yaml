@@ -24,8 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  permission_handler: ^5.0.1+1
-  camera: ^0.5.7+2
+#  permission_handler: ^5.0.1+1
+#  camera: ^0.5.7+2
   path_provider: ^1.4.2
   path: ^1.6.4
   image_picker: ^0.6.4+4
@@ -33,9 +33,9 @@ dependencies:
   image_cropper: ^1.4.0
   image: ^3.0.2
   tflite:
-  tflite_flutter:
+#  tflite_flutter:
   sqflite: ^1.3.0
-  favorite_button:
+#  favorite_button:
   shared_preferences:
   fluttertoast:
   url_launcher:

@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+// import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
@@ -21,7 +20,6 @@ class SearchPill extends StatefulWidget {
 
 class SearchPillState extends State<SearchPill> {
   bool camPermissionsGranted = false;
-  List<CameraDescription> cameras;
 
   File _imageFile;
 
@@ -78,19 +76,19 @@ class SearchPillState extends State<SearchPill> {
                     '이미지 분류',
                     style: TextStyle(fontSize: 25),
                   )),
-              OutlinedButton(
-                  onPressed: () {
-                    print(_imageFile.path);
-                    GallerySaver.saveImage(_imageFile.path)
-                        .then((value) => print('>>>> save value= $value'))
-                        .catchError((err) {
-                      print('error :( $err');
-                    });
-                  },
-                  child: Text(
-                    '이미지 저장',
-                    style: TextStyle(fontSize: 25),
-                  )),
+              // OutlinedButton(
+              //     onPressed: () {
+              //       print(_imageFile.path);
+              //       GallerySaver.saveImage(_imageFile.path)
+              //           .then((value) => print('>>>> save value= $value'))
+              //           .catchError((err) {
+              //         print('error :( $err');
+              //       });
+              //     },
+              //     child: Text(
+              //       '이미지 저장',
+              //       style: TextStyle(fontSize: 25),
+              //     )),
               // Text(result == null ? 'result' : result.toString()),
             ],
           ),

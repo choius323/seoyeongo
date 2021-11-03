@@ -12,8 +12,6 @@ import 'MedicineInfo2.dart';
 class DBHelper {
   Database _db;
 
-  DBHelper();
-
   Future<void> openDB() async {
     // String dbPath = join(await getDatabasesPath(), 'assets/grn_info.db');
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
