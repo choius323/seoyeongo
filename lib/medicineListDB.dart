@@ -84,7 +84,7 @@ class _MedicineListDBState extends State<MedicineListDB> {
             Container(
               child: FutureBuilder(
                 future: Future.delayed(
-                    Duration(milliseconds: 500),
+                    Duration(milliseconds: 1500),
                     () => db.getDBData(
                         page: page,
                         itemSeq: itemSeq,

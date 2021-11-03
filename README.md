@@ -1,6 +1,6 @@
 # seoyeongo
 
-seoyeongo application
+This is seoyeongo(서연고) application.
 
 This project is made with Flutter.
 
